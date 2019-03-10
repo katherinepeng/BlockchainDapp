@@ -32,18 +32,36 @@ contact Gambling {
 	//METHODS
 
 	//constructor??
+	function Gambling () public {
+
+	}
 
 	//random number generator (URL method - implement this last)
 
 	//setting the values of the player
+	function setVal (uint player) public {
+
+	}
 
 	//grab inputs from what button they press
+	function userBetNum (uint buttonPress) public {
+
+	}
 
 	//display whether the player won or lost, how much the player won
+	function results () public {
+
+	}
 
 	//distribute prizes/money
+	function distributePrize () {
+
+	}
 
 	//reset the game (reset all the variables) after someone wins the game
+	function resetGame () {
+		
+	}
 
 
 
