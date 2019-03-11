@@ -60,7 +60,8 @@ contact Gambling {
 
 	//reset the game (reset all the variables) after someone wins the game
 	function resetGame () {
-		
+		totalBet = 0;
+		numberOfBets = 0;
 	}
 
 
