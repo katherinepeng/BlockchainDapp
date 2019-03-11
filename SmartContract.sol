@@ -1,51 +1,60 @@
-pragma solidity 0.4.20;
+// link to example
+// https://github.com/KPull/eth-guess-the-number-game/blob/master/GuessTheNumberGame.sol
+pragma solidity ^0.5.5;
 
 contract Gambling {
-	address owner;
 
+	event GameBegins(uint bet);
+	event SubmitGuess(address player, uint guess);
+	event PlayerWins(address player);
+	event PlayerLoses(address owner);
+
+	address public owner;
 	//the minimum bet a user has to make in order to participate 
 	//maybe do some calculates about how the minimum bet has to be greater than the transaction cost
-	uint public minimumBet = 1;
-
-	//the total amount of etherum/money in this pool
-	uint public totalBet;
-
-	//the amount of the current bet
-	unit public currBet;
-
+	uint private minimumBet = .1;
+	uint private totalBet = 0;
+	//uint private currBet;
 	//the total num of bets made so far
-	unit public numberOfBets;
-
+	uint private numberOfBets = 0;
 	//the max number of bets that each user can make
-	uint public maxAmountOfBets = 10;
-
+	uint private constant maxAmountOfBets = 10;
 	//constant var for the max amount of bets that cannot exceed this val
-	uint public constant LIMIT_AMOUNT_BETS = 100;
-
+	uint private constant LIMIT_AMOUNT_BETS = 100;
 	//the number that the user presses
-	unit public betNum;
-
+	//uint private betNum;
 	//constant number of users - only 10 are allowed (maybe we need to use a hashmap or array)
-	unit public constant NUM_USERS = 10;
+	uint private constant NUM_USERS = 10;
+	uint private playerID = 0;
 
+	struct Player {
+		uint id;
+		uint amountBet;
+		uint betNum;
+	}
+	
+	Player[] public players;
 
 	//METHODS
 
 	//constructor??
-	function Gambling () public {
-
+	constructor() public {
+		owner = msg.sender;
 	}
 
 	//random number generator (URL method - implement this last)
 
+//not sure what this method is for?
 	//setting the values of the player
-	function setVal (uint player) public {
+	function setVal (uint _player) public {
 
 	}
 
 	//grab inputs from what button they press
-	function userBetNum (uint buttonPress) public {
-
+	function userBetNum (uint _amountBet, uint _buttonPress) public {
+		require (playerID < NUM_USERS, "Too many players.");
+		players.push(Player(playerID, _amountBet, _buttonPress));
+		playerID += 1;
 	}
 
 	//display whether the player won or lost, how much the player won
@@ -63,7 +72,9 @@ contract Gambling {
 		totalBet = 0;
 		numberOfBets = 0;
 	}
-
-
-
+/*
+	function isValidPlayer (uint _playerID) private pure returns (bool) {
+		return _playerID < NUM_USERS;
+	}
+	*/
 }
