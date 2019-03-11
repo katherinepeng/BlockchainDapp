@@ -1,6 +1,6 @@
 pragma solidity 0.4.20;
 
-contact Gambling {
+contract Gambling {
 	address owner;
 
 	//the minimum bet a user has to make in order to participate 
