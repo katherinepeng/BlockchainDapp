@@ -4,13 +4,9 @@ pragma solidity ^0.5.1;
 
 contract Gambling {
 
-	event AnswerSubmitted(uint answer);
-	event BetSubmitted(address player, uint bet, uint guessedNum);
-	event DisplayResults(string winner);
-
-	// enum State {
-	// 	WAITING_BET, WAITING_RESULT, OWNER_WIN, PLAYER_WIN
-	// }
+	// event AnswerSubmitted(uint answer);
+	// event BetSubmitted(address player, uint bet, uint guessedNum);
+	// event DisplayResults(string winner);
 
 	address payable public owner;
 	address payable public player;
@@ -18,12 +14,12 @@ contract Gambling {
 	// State public state;
 	//the minimum bet a user has to make in order to participate
 	//maybe do some calculates about how the minimum bet has to be greater than the transaction cost
-	uint private minimumBet = 100 finney;
-	uint private totalBet = 0;
-	uint private selected;
-	uint private transactionCost = totalBet * 1/20;
-	uint private answer;
-	string private winner;
+	uint public minimumBet = 100 finney;
+	uint public totalBet = 0;
+	uint public selected;
+	uint public transactionCost = totalBet * 1/20;
+	uint public answer;
+	uint public winOrLose;
 	//uint private currBet;
 	//the total num of bets made so far
 	//uint private numberOfBets = 0;
@@ -40,27 +36,21 @@ contract Gambling {
 	//METHODS
 
 	//constructor??
-	constructor() public {
+	constructor(uint _minimumBet) public {
 		owner = msg.sender;
-		//set player address
+		minimumBet = _minimumBet;
 	}
 	function _generateRandomNum (string memory _str) private pure returns (uint x) {
         uint rand = uint(keccak256(abi.encodePacked(_str)));
-        return rand % 10;
+        return rand % 10 + 1;
     }
-	// function generateRandom () private pure returns(uint _answer) {
-	// 	//random number generator (URL method - implement this last)
-	// 	answer = 0;
-
-	// }
 	
 	//grab inputs from what button they press
-	function userBetNum (uint _amountBet, uint _buttonPress) public {
+	function userBetNum (uint _buttonPress) public payable {
 		player = msg.sender;
-		totalBet = _amountBet;
+		totalBet = msg.value;
 		selected = _buttonPress;
-		//state = WAITING_RESULT;
-		emit BetSubmitted(player, totalBet, selected);
+		results();
 	}
 	function toString(address x) private pure returns (string memory playerString) {
 	    bytes memory b = new bytes(20);
@@ -72,31 +62,22 @@ contract Gambling {
 	function results () public payable {
 		answer = _generateRandomNum(toString(player));
 		if (answer == selected) {
-			winner = "You are the winner.";
+			// winner = "You are the winner.";
 			player.transfer((totalBet - transactionCost) * 2);
 			// casinoPot = casinoPot - totalBet - transactionCost;
+			resetGame();
+			winOrLose = 1;
 		} else {
-			winner = "You are the loser.";
+			// winner = "You are the loser.";
 			owner.transfer(totalBet);
+			resetGame();
+			winOrLose = 0;
 		}
-
-		emit DisplayResults(winner);
-		resetGame();
 	}
-
-	// //distribute prizes/money
-	// function distributePrize () address payable {
-
-	// }
 
 	//reset the game (reset all the variables) after someone wins the game
 	function resetGame () private {
 		totalBet = 0;
-		totalBet = 0;
+		player = address(0);
 	}
-/*
-	function isValidPlayer (uint _playerID) private pure returns (bool) {
-		return _playerID < NUM_USERS;
-	}
-	*/
 }
